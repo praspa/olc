@@ -50,10 +50,6 @@
 	$user = $FORM{name};
     	$message = $FORM{message};
 
-	# sanitize the message
-	$message = scubatize($message);
-	#$message = rotname($message);
-	
 	# remove trailing white space
 	# this will help with command parsing
 	$message = rtrim($message);
@@ -226,40 +222,6 @@
 		print "</table>";
 
 		close FILE;
-	}
-
-
-# WARNING #
-# Please resd no further if foul language offends you #
-# This is not intended to be vulgar &
-# The intent is to filter certain engineers with foul mouths #
-
-
-	# sanitize foul engineering language
-        #  (and no C++ doesn't count here)
-	sub scubatize
-	{
-		my $string = shift;
-
-
-		my %swearsies = (
-			fuck  => 'sillyninny',
-			shit  => 'hershey squirt',
-			ass   => 'alan miko',
-			bitch => 'Ada',
-			cunt  => 'diane sawyer',
-			slut  => 'rocket house',
-			bastard  => 'spidervein',
-			whore  => 'double rainbow',
-			gay  => 'scuba',
-			piss  => 'lemonade stand',
-		);	
-
-		for my $swear (keys %swearsies) {
-			$string =~ s/$swear/$swearsies{$swear}/i;
-		}
-
-		return $string;
 	}
 
 	sub rotname
