@@ -1,0 +1,202 @@
+<html>
+<head>
+<title> OLC </title>
+<script type="text/javascript">
+
+
+// Auto or Semi Automatic button State
+// Default auto is on
+var auto = true;
+var semiauto = false;
+
+// Rate at which chat updates happen
+var interval;
+
+interval = setInterval(function() { 
+	getChat();
+}, 2000);
+
+
+function changeInterval(rate) {
+
+	clearInterval(interval);
+
+	interval = setInterval(function() { getChat();}, rate);
+
+}
+
+
+function loadXMLDoc() {
+
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+ 
+// send HTTP POST request
+try
+{
+    xmlhttp.open("POST", "/cgi-bin/hello.cgi", true);
+}
+catch (e)
+{
+    alert('Error sending HTTP POST request!');
+    return false;
+}
+// we won't be handling any HTTP response
+xmlhttp.onreadystatechange=function()
+{
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    	document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+    }
+}
+
+	var msg;
+
+	var messageText = document.getElementById('messagebox');
+	var userID = document.getElementById('namebox');
+	msg = "name=" + userID.value + "&message=" + messageText.value ;
+
+	messageText.value = "";
+
+// Then send it.
+xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp.setRequestHeader("Content-length", msg.length);
+xmlhttp.setRequestHeader("Connection","close");
+xmlhttp.send(msg);
+
+
+}
+
+
+function getChat() {
+
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+ 
+// send HTTP POST request
+try
+{
+    xmlhttp.open("POST", "/cgi-bin/hello.cgi", true);
+}
+catch (e)
+{
+    alert('Error sending HTTP POST request!');
+    return false;
+}
+// we won't be handling any HTTP response
+xmlhttp.onreadystatechange=function()
+{
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+	if(xmlhttp.responseText.substr(-30).indexOf("s.") != -1)
+	{
+//		document.getElementById("myDiv").innerHTML = xmlhttp.responseText.substr(0,xmlhttp.responseText.length-32)+"</td></tr></table>";
+		// no more for now
+		//myFW.start();
+		//setTimeout('myFW.stop()', 6000);
+	}
+	else
+	{
+		document.getElementById("myDiv").innerHTML = xmlhttp.responseText;
+	}
+    }
+}
+
+// Then send it.
+xmlhttp.send(null);
+
+
+}
+
+function submitenter(e)
+{
+	var keycode;
+	if (window.event) keycode = window.event.keyCode;
+	else if (e) keycode = e.which;
+	else return true;
+
+	if ( keycode == 13 )
+	{
+		loadXMLDoc();	
+
+		return false;
+	}
+	else
+		return true;
+}
+
+function updateButtons() {
+
+	if( auto == true )
+	{
+		document.getElementById("autoButton").style.backgroundColor="#9999CC";
+		document.getElementById("semiautoButton").style.backgroundColor="";
+		auto = false;
+		semiauto = true;
+		changeInterval(2000);
+		return;
+	}
+	else if ( semiauto == true )
+	{
+		
+		document.getElementById("autoButton").style.backgroundColor="";
+		document.getElementById("semiautoButton").style.backgroundColor="#9999CC";
+		auto = true;
+		semiauto = false;
+		changeInterval(900000);
+		return;
+	}
+
+}
+
+function paintButtons() {
+
+
+	document.getElementById("autoButton").style.backgroundColor="#9999CC";
+	document.getElementById("semiautoButton").style.backgroundColor="";
+        auto = false;
+        semiauto = true;
+
+}
+
+</script>
+<!-- <script src="support.js"></script> -->
+<style>
+*{overflow:hidden;font-family:courier}
+.chat{word-wrap:break-word;font-size:10px}
+#chatrow{position:absolute; bottom:35px}
+#entryrow{position:absolute; bottom:5px}
+#userrow{position:absolute; top: 5px; right: 25px}
+</style>
+</head>
+<body onLoad="getChat();paintButtons()">
+<font color="black">
+<table>
+<tr id="chatrow">
+<td>
+<div id="myDiv"></div>
+</td>
+</tr>
+<tr id="entryrow">
+<td><input size="3" id='namebox' type="text" value="UID" />
+<input size="25" id='messagebox' type="text" value="<message here>"  onKeyPress="submitenter(event)" />
+<input id='semiautoButton' type="button" onClick="updateButtons()" value="Semi-Auto"/>
+<input id='autoButton' type="button" onClick="updateButtons()" value="Auto"/></td>
+</tr>
+</body>
+</html>
+
